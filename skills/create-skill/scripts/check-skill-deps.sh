@@ -31,6 +31,7 @@ while IFS= read -r d; do HARNESS+=("${d%/}"); done < <("$HERE/wire-skills.sh" --
 
 SKILLS_DIR=${SKILLS_DIR:-skills}
 SKILLS_DIR=${SKILLS_DIR%/}
+SOURCE_DIR=$SKILLS_DIR   # kept for the summary line; SKILLS_DIR may fall back below
 CHECK_WIRING=1
 if [ ! -d "$SKILLS_DIR" ]; then
   SKILLS_DIR=${HARNESS[0]}
@@ -106,6 +107,6 @@ for n in ${targets[@]+"${targets[@]}"}; do
   done
 done
 
-if [ "$CHECK_WIRING" = 1 ]; then where="folders: ${HARNESS[*]}"; else where="no $SKILLS_DIR source folder, C6 skipped"; fi
+if [ "$CHECK_WIRING" = 1 ]; then where="folders: ${HARNESS[*]}"; else where="no $SOURCE_DIR/ source folder, read $SKILLS_DIR, C6 skipped"; fi
 echo "check-skill-deps: checked=$checked fail=$fails note=$notes ($where)"
 [ "$fails" -eq 0 ]

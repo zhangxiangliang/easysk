@@ -78,6 +78,7 @@ R2="$TMP/flat"; mkdir -p "$R2/.claude/skills"; git -C "$R2" init -q
 cd "$R2"
 check "flat layout: wire is a no-op" .claude/skills/create-skill/scripts/wire-skills.sh
 check "flat layout: deps check passes, C6 skipped" bash -c '.claude/skills/create-skill/scripts/check-skill-deps.sh | grep -q "C6 skipped"'
+check "flat layout: summary names the missing source folder" bash -c '.claude/skills/create-skill/scripts/check-skill-deps.sh | grep -q "no skills/ source folder, read .claude/skills"'
 
 # 6. skill-creator detection and the eval wrapper's guards (no model calls)
 R3="$TMP/sc"; new_repo "$R3"; add_skill "$R3" alpha '- none'

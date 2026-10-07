@@ -22,7 +22,17 @@ npx skills add zhangxiangliang/easysk          # as a skill (pick Symlink)
 claude mcp add easysk -- npx -y easysk@1 mcp   # or over MCP
 ```
 
-Then type `/easysk audit`.
+Then type a command:
+
+| Command | What it does |
+|---|---|
+| `/easysk audit` | Checks every skill. Changes nothing. |
+| `/easysk <idea>` | Designs a new skill with you, then builds it. |
+| `/easysk fix <name>` | Moves a skill into the standard shape. What it does stays the same. |
+| `/easysk improve <name>` | Changes a skill, but only from evidence: run logs, your words, a failed test. |
+| `/easysk rebuild <name>` | Writes a patched skill again from scratch. The only command that may delete a rule. |
+
+On the command line, `npx easysk check` and `npx easysk wire` do the checking and linking without an AI.
 
 ## License
 

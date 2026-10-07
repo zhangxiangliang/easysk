@@ -1,0 +1,54 @@
+{
+  "command": "create",
+  "target": "create-skill",
+  "date": "2026-08-13",
+  "step0": {
+    "existing": 35,
+    "loaded": 13,
+    "nearDuplicates": [
+      "an older skill on repo mechanics — overlaps; another author's skill, so the two coexist (an earlier draft of this run deleted it — reverted the same day on the user's correction)"
+    ],
+    "verdict": "new skill, alongside the older one"
+  },
+  "step1": {
+    "rounds": 3,
+    "questionsAsked": 7,
+    "understood": "one mandatory structure for every skill (overview-then-steps, per-step traces, prose check, learning library) + four lifecycle commands, and the tool itself must follow its own rules"
+  },
+  "step2": {
+    "proposals": 2,
+    "rejected": [
+      "v1 three-tier templates by skill weight — user: every skill follows the same structure, no lightweight exception"
+    ],
+    "confirmedSteps": [
+      "create: dedup, understand, step list, details+commands, final yes, build",
+      "audit: enumerate, C1-C8 per skill, one table",
+      "fix: content inventory, map, approve+wire",
+      "improve: evidence, proposal, approve+apply"
+    ]
+  },
+  "step3": {
+    "stepsDetailed": 4,
+    "commandsProposed": 4,
+    "commandsAccepted": 4,
+    "changes": [
+      "fix and improve split: form first, content second, separate approvals",
+      "improve limited to evidence only (run traces / user feedback / benchmarks)",
+      "references/ kept for runtime material; learning library moved to best-practice/ with REAL artifacts"
+    ]
+  },
+  "step4": {
+    "blueprint": "a written design record",
+    "outcome": "approved — user said start building"
+  },
+  "step5": {
+    "written": true,
+    "projectRules": "met (prose check, index row, log entry)",
+    "symlink": "created + resolves",
+    "depsCheck": "clean (21 other skills still missing symlinks — on purpose, no mass migration)",
+    "loadedAfterRestart": "loaded WITHOUT restart — list picked the symlink up live"
+  },
+  "skipped": {
+    "step1.fixedQuestionList": "no fixed list — the live design discussion covered every question"
+  }
+}

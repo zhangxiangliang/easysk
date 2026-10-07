@@ -1,0 +1,22 @@
+[
+  {"query": "/easysk a command that drafts our weekly release notes from the PRs merged since the last tag", "should_trigger": true},
+  {"query": "every friday I paste the same 6 steps to deploy the docs site into this chat. can we turn that into something I just call?", "should_trigger": true},
+  {"query": "audit the skills in this repo, I think half of them are not even loading", "should_trigger": true},
+  {"query": "our deploy-app SKILL.md has been patched about 30 times and the rules contradict each other now. rewrite it clean, same behavior", "should_trigger": true},
+  {"query": "fix skill pr-review so it has the same structure as the others, but do not change what it does", "should_trigger": true},
+  {"query": "improve skill changelog - the run traces show it asks me which slack channel to post to every single time", "should_trigger": true},
+  {"query": "make a skill that checks api/openapi.yaml for breaking changes before we cut a release", "should_trigger": true},
+  {"query": "half the folders in skills/ don't show up as slash commands. which ones are not wired into .claude/skills?", "should_trigger": true},
+  {"query": "rebuild skill jira-comment, it has grown into a mess", "should_trigger": true},
+  {"query": "I keep explaining how we cut a hotfix branch. write it down once as a reusable command for the team", "should_trigger": true},
+  {"query": "what skills do I need to get a job as a backend engineer?", "should_trigger": false},
+  {"query": "fix the failing test in src/parser.test.ts, it broke after the last merge", "should_trigger": false},
+  {"query": "audit our npm dependencies for known vulnerabilities and tell me what to upgrade", "should_trigger": false},
+  {"query": "rebuild the docker image without cache, the old layer has a stale lockfile", "should_trigger": false},
+  {"query": "create a React component called UserCard that takes name and avatarUrl props", "should_trigger": false},
+  {"query": "improve the performance of this SQL query, it takes 8 seconds on the orders table", "should_trigger": false},
+  {"query": "write a bash script that renames every .jpeg file in this folder to .jpg", "should_trigger": false},
+  {"query": "refactor utils.py into smaller modules, it is 1400 lines", "should_trigger": false},
+  {"query": "set up a GitHub Action that runs eslint on every pull request", "should_trigger": false},
+  {"query": "review this pull request for security problems before I merge it", "should_trigger": false}
+]

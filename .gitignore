@@ -1,4 +1,8 @@
-# harness folders hold symlinks made by wire-skills.sh — only skills/ is committed
+dist/
+.DS_Store
+node_modules/
+coverage/
+tmp/
+# harness folders hold symlinks made by `easysk wire` — only skills/ is committed
 .claude/skills/
 .agents/skills/
-.DS_Store

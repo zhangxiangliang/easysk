@@ -1,6 +1,6 @@
 # rebuild — the full procedure
 
-Reference for `create-skill rebuild <name>`. `SKILL.md` carries the six steps
+Reference for `easysk rebuild <name>`. `SKILL.md` carries the six steps
 and their trace fragments; this file carries the commands and the judgment
 calls behind them. `<skills dir>` below is the project's source folder,
 usually `skills`.
@@ -174,7 +174,7 @@ otherwise the commit message:
 ```markdown
 ## [YYYY-MM-DD] rebuild | <name>
 
-- **Rebuilt** `<skills dir>/<name>/` via `/create-skill rebuild`: <one line on
+- **Rebuilt** `<skills dir>/<name>/` via `/easysk rebuild`: <one line on
   what the skill still does — behavior unchanged>.
 - Old version: `<sha>` — restore with `git checkout <sha> -- <skills dir>/<name>`.
 - Deleted: <n> rules — <one line each, with the reason>.

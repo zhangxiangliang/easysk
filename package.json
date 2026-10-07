@@ -1,0 +1,72 @@
+{
+  "name": "easysk",
+  "version": "0.0.0-development",
+  "description": "Keep every AI agent skill in your project in one shape: create, audit, fix, improve and rebuild skills. Works as a skill, a CLI and an MCP server. Pure TypeScript, zero runtime dependencies.",
+  "author": "zhangxiangliang",
+  "keywords": [
+    "skills",
+    "agent-skills",
+    "claude-code",
+    "skill-md",
+    "mcp",
+    "ai",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhangxiangliang/easysk.git"
+  },
+  "homepage": "https://github.com/zhangxiangliang/easysk#readme",
+  "bugs": "https://github.com/zhangxiangliang/easysk/issues",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "easysk": "dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "clean": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true })\"",
+    "prebuild": "npm run clean",
+    "build": "tsc -p tsconfig.build.json",
+    "postbuild": "node -e \"require('fs').chmodSync('dist/cli.js', 0o755)\"",
+    "prepack": "npm run build",
+    "prepare": "husky",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.test.json",
+    "test": "jest --config jest.config.js --coverage",
+    "test:unit": "npm test -- --runInBand",
+    "ci": "npm run build && npm run typecheck && npm test",
+    "validate": "npm run lint && npm run ci",
+    "validate:release": "npm run validate"
+  },
+  "license": "MIT",
+  "files": [
+    "dist/**/*",
+    "skills/**/*"
+  ],
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.0.0",
+    "eslint": "^10.2.1",
+    "globals": "^17.5.0",
+    "husky": "^9.1.7",
+    "jest": "^30.3.0",
+    "semantic-release": "^25.0.3",
+    "ts-jest": "^29.4.9",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.1"
+  }
+}

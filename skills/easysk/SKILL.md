@@ -1,10 +1,10 @@
 ---
-name: create-skill
+name: easysk
 argument-hint: "[idea] | audit | fix <name> | improve <name> | rebuild <name>"
-description: "Create, audit, fix, improve or rebuild a skill in this project under one standard structure (create is co-design; improve only from evidence; rebuild is the only command that may delete a rule). Use when any repeated workflow should become a reusable command, or when a patched skill needs a clean rewrite, even without the word skill. Trigger with \"/create-skill\", \"create a skill\", \"audit skills\", \"fix skill <name>\", \"improve skill <name>\", \"rebuild skill <name>\"."
+description: "Create, audit, fix, improve or rebuild a skill in this project under one standard structure (create is co-design; improve only from evidence; rebuild is the only command that may delete a rule). Use when any repeated workflow should become a reusable command, when skills do not load or show up, or when a patched skill needs a clean rewrite, even without the word skill. Trigger with \"/easysk\", \"create a skill\", \"audit skills\", \"fix skill <name>\", \"rebuild skill <name>\"."
 ---
 
-# create-skill
+# easysk
 
 One tool for a skill's whole life: **create, audit, fix, improve, rebuild**.
 It holds every skill in the project to one standard structure, small
@@ -24,20 +24,19 @@ Project rules win. If the project's own instructions (`CLAUDE.md`,
 `AGENTS.md`, a skills index) say how skills are registered, which language
 they use or how prose is checked, follow them on top of this file.
 
-`<this skill>` below is the folder this `SKILL.md` is in, as a path from the
-project root — `skills/create-skill`, `.agents/skills/create-skill` or
-`.claude/skills/create-skill`, wherever it was installed. Run every script
-from the project root as `<this skill>/scripts/<script>`.
+`easysk` in a command below means `npx -y easysk@1` — the CLI release that
+matches this file. Run it from the project root; it prints JSON. Over MCP the
+same commands are the `easysk_check` and `easysk_wire` tools.
 
 ## How to call it
 
 | You type | What happens | Done when |
 |---|---|---|
-| `/create-skill <idea>` | Create a new skill: dedup → understand (question loop) → confirm step list → confirm details + commands → final yes → build | the new skill is written, wired, checked, and shows up after a restart — user confirms the blueprint first |
-| `/create-skill audit` | Check ALL skills against the checklist; one compliance table | the table is shown; nothing changed |
-| `/create-skill fix <name>` | Move an existing skill INTO the structure — form only, zero behavior change | the new file is written and every inventory item is ticked — user approves the draft first |
-| `/create-skill improve <name>` | Upgrade a skill's content — from evidence only, via a proposal | the approved changes are applied — user approves each one |
-| `/create-skill rebuild <name>` | Rebuild a patched skill whole — same behavior, every rule re-derived with its source, contradictions and dead rules deleted on the user's ruling | a fresh file is swapped in and every rule is accounted for — user approves the outline first |
+| `/easysk <idea>` | Create a new skill: dedup → understand (question loop) → confirm step list → confirm details + commands → final yes → build | the new skill is written, wired, checked, and shows up after a restart — user confirms the blueprint first |
+| `/easysk audit` | Check ALL skills against the checklist; one compliance table | the table is shown; nothing changed |
+| `/easysk fix <name>` | Move an existing skill INTO the structure — form only, zero behavior change | the new file is written and every inventory item is ticked — user approves the draft first |
+| `/easysk improve <name>` | Upgrade a skill's content — from evidence only, via a proposal | the approved changes are applied — user approves each one |
+| `/easysk rebuild <name>` | Rebuild a patched skill whole — same behavior, every rule re-derived with its source, contradictions and dead rules deleted on the user's ruling | a fresh file is swapped in and every rule is accounted for — user approves the outline first |
 
 Natural phrases work too: "create a skill for X", "audit the skills", "fix
 the deploy skill", "rebuild that skill", "refactor that skill".
@@ -54,8 +53,8 @@ audit adds nothing and skips nothing.
 | C3 | **Shape**: overview first (what it is + hard rule + "How to call it" table, each command with its done condition), then numbered steps, **each step ending with its own json trace fragment** — or one complete trace example covering all steps. Under 500 lines; overflow moves into `references/`; a reference file over 300 lines gets a table of contents |
 | C4 | **Run trace rule stated**: every run writes `data/runs/<KEY>--<UTC timestamp>--<discriminator>.json`. `<KEY>` is the work-item key (for example a ticket) or the literal `NOTICKET`; the timestamp is `YYYYMMDDTHHMMSSZ`. The file opens with a `_meta` block (`schema`, `ticket`, `skill`, `run_id`, `startedAt`, `endedAt`) and each step writes its record when it finishes |
 | C5 | **Library**: `best-practice/` is committed and holds REAL artifacts (a real run trace, real benchmarks with why they worked); it grows by propose-then-approve only |
-| C6 | **Wired**: when the project keeps its skills in a source folder (`skills/`), every harness folder the project uses (`.claude/skills/`, `.agents/skills/`, …) holds a symlink resolving to `../../skills/<name>`. No symlink = not loaded. `<this skill>/scripts/wire-skills.sh` owns the links; never write one by hand |
-| C7 | **Skill dependencies**: a `## Skill dependencies` section lists every skill this one **calls** (runs, or tells the user to run), one bullet each with where it is used, or the single bullet `- none`. A skill that is only mentioned is not a dependency. Every listed name must exist and pass C6. `<this skill>/scripts/check-skill-deps.sh` checks it |
+| C6 | **Wired**: when the project keeps its skills in a source folder (`skills/`), every harness folder the project uses (`.claude/skills/`, `.agents/skills/`, …) holds a symlink resolving to `../../skills/<name>`. No symlink = not loaded. `easysk wire` owns the links; never write one by hand |
+| C7 | **Skill dependencies**: a `## Skill dependencies` section lists every skill this one **calls** (runs, or tells the user to run), one bullet each with where it is used, or the single bullet `- none`. A skill that is only mentioned is not a dependency. Every listed name must exist and pass C6. `easysk check` checks it |
 | C8 | **Project rules**: whatever the project's own instructions require of a skill (a row in a skills index, a log entry, a language, a prose check) is met. A project with no such rules passes |
 
 ## Where skills live
@@ -71,8 +70,8 @@ to it. It is vendored: audit gives it C6 only, and nothing here moves it.
 
 ```bash
 # from the project root
-<this skill>/scripts/wire-skills.sh               # link every skill into every harness folder, drop dead links
-<this skill>/scripts/check-skill-deps.sh [name]   # C6 + C7: every skill wired, every declared dependency real
+easysk wire [--dry-run]          # link every skill into every harness folder, drop dead links
+easysk check [name...]           # every check a program can settle (C1–C7); C5 and C8 come back as "manual"
 ```
 
 Commit the source folder only. Script settings, the `data/` permission rule
@@ -95,7 +94,7 @@ has the example); `endedAt` is never backfilled.
 
 ## Command: create — co-design first, build last
 
-The user tells create-skill what they want; the skill designs the new skill
+The user tells easysk what they want; the skill designs the new skill
 WITH them, and only builds after an explicit final yes. **Nothing touches
 the project before Step 4 is approved** — the run trace is the one exception.
 A rejected proposal is rethought, not defended.
@@ -188,8 +187,7 @@ trace to copy is
 [`best-practice/example-run-trace.json`](best-practice/example-run-trace.json).
 Seed the new skill's `best-practice/` with its first page. Meet the project's
 own rules (C8): its index row, its log entry, its language and prose checks.
-Wire with `<this skill>/scripts/wire-skills.sh`, check with
-`<this skill>/scripts/check-skill-deps.sh`, then have the user restart
+Wire with `easysk wire`, check with `easysk check <name>`, then have the user restart
 the session and confirm `/<name>` shows up — a missing symlink is the usual
 cause of a no-show. When skill-creator is available, write
 `evals/trigger-evals.json` with the user and run the trigger eval; a failing
@@ -209,13 +207,12 @@ query becomes a description proposal, not an edit
 
 ### Step 0 — enumerate
 
-Both listings (skills folder + available list) and
-`<this skill>/scripts/check-skill-deps.sh`. Every folder with a
-`SKILL.md` is audited — no sampling, no skipping. Vendored skills get C6
-only: take their names from the project's instructions or skills index and
-pass them as `VENDORED_SKILLS="a b"` to the deps check. When nothing names
-any, treat every skill as the project's own and say so in one line of the
-report — never stop to ask.
+Both listings (skills folder + available list) and `easysk check`. Every
+folder with a `SKILL.md` is audited — no sampling, no skipping. Vendored
+skills get C6 only: take their names from the project's instructions or
+skills index and pass them as `easysk check --vendored a,b`. When nothing
+names any, treat every skill as the project's own and say so in one line of
+the report — never stop to ask.
 
 ```json
 "step0": { "folders": 35, "loaded": 33, "missingSymlinks": 2, "vendored": 3 }
@@ -225,6 +222,10 @@ report — never stop to ask.
 
 Score every skill against C1–C8. A check either passes or gets a one-line
 reason. No judgment calls beyond the checklist — audit measures, fix repairs.
+A `fail` from `easysk check` stands. Read the file only for what the tool
+cannot settle: its `manual` checks (C5 real artifacts, C8 project rules),
+whether a C2 description is pushy, and whether a tool-shaped skill names its
+C1 folder mapping.
 
 ```json
 "step1": { "<name>": { "pass": ["C1","C2"], "fail": { "C6": "no symlink" } } }
@@ -407,7 +408,7 @@ name: the patch shape it was called to remove survives. Then match every Step 1 
 ### Step 5 — verify, wire, record
 
 Meet the project's own rules (C8), run
-`<this skill>/scripts/check-skill-deps.sh`, and write a record of the
+`easysk check <name>`, and write a record of the
 rebuild — the old SHA, the delete list and the carried-verbatim count —
 wherever the project keeps its skill history (a log file, the commit
 message). It is the only time rules leave a skill, so it earns the record.
@@ -431,7 +432,7 @@ Otherwise the next real run after a restart is the proof; if it misbehaves,
 - none
 
 Optional, not a project skill: Anthropic's `skill-creator`, for measurement
-only. When `scripts/skill-creator-env.sh` cannot find it, every step that
+only. When `easysk eval` cannot find it, every step that
 would use it is skipped and says so in the trace.
 
 ## Hard rules

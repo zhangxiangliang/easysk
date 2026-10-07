@@ -133,7 +133,7 @@ today. Close the trace with the outcome. Delete this note.>
 
 <Every skill this one CALLS — runs, or tells the user to run — one bullet
 each, with where. A skill that is only mentioned is not a dependency. Write
-`- none` if there is nothing. The heading is exact: check-skill-deps.sh reads
+`- none` if there is nothing. The heading is exact: `easysk check` reads
 it. Delete this note.>
 
 - `<skill>` — Step <n>, <why>
@@ -148,7 +148,8 @@ write only after the user approves.
 ## A real trace, filled in
 
 [`../best-practice/example-run-trace.json`](../best-practice/example-run-trace.json)
-is the real trace of create-skill's own creation. Copy the shape: short
+is the real trace of easysk's own creation (back when it was called
+create-skill). Copy the shape: short
 values, every step present, rejected proposals stay in the record with the
 user's own words, `skipped` explains the fast-forwards, and even a wrong turn
 stays in. It predates the `_meta` envelope, which every new trace adds on top.
@@ -162,7 +163,7 @@ Every run file opens with it, then the step records:
   "_meta": {
     "schema": 1,
     "ticket": "NOTICKET",
-    "skill": "create-skill",
+    "skill": "easysk",
     "run_id": "NOTICKET--20260921T011032Z--rebuild--deploy-app",
     "startedAt": "2026-09-21T01:10:32.250Z",
     "endedAt": "2026-09-21T01:24:07.113Z"

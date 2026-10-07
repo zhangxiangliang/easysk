@@ -10,24 +10,78 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # macOS ships bash 3.2 and BSD tools; Ubuntu has bash 5 and GNU tools.
-        # The scripts must work on both.
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
+        node-version: [18, 20, 24]
+        include:
+          # symlinks and tools differ on macOS; test it on the newest Node
+          - os: macos-latest
+            node-version: 24
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Script tests
-        run: tests/run.sh
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        if: matrix.node-version == 20 && matrix.os == 'ubuntu-latest'
+        run: npm run lint
+
+      - name: CI
+        run: npm run ci
 
       - name: The repo passes its own checks
         run: |
-          skills/create-skill/scripts/wire-skills.sh
-          skills/create-skill/scripts/check-skill-deps.sh
+          node dist/cli.js wire
+          node dist/cli.js check easysk
+
+  # Windows has no plain symlinks without admin rights; easysk makes junctions.
+  # The unit tests assume POSIX paths, so this is an end-to-end smoke test.
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install and build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Wire and check a project
+        shell: pwsh
+        run: |
+          $cli = Join-Path $PWD "dist/cli.js"
+          $p = Join-Path $env:RUNNER_TEMP "proj"
+          New-Item -ItemType Directory -Force "$p/skills/alpha" | Out-Null
+          Set-Content "$p/skills/alpha/SKILL.md" "---`nname: alpha`n---`n`n## Skill dependencies`n`n- none"
+          Push-Location $p
+          git init -q
+          node $cli wire
+          if ($LASTEXITCODE -ne 0) { throw "wire failed" }
+          if (-not (Test-Path ".claude/skills/alpha/SKILL.md")) { throw "the link does not resolve" }
+          node $cli wire | Out-String | Select-String '"kept": 1' | Out-Null
+          if (-not $?) { throw "second wire is not a no-op" }
+          $report = node $cli check alpha | ConvertFrom-Json
+          if ($report.skills[0].fail.C6) { throw "C6 failed: $($report.skills[0].fail.C6)" }
+          if ($report.skills[0].fail.C7) { throw "C7 failed: $($report.skills[0].fail.C7)" }
+          Pop-Location

@@ -9,12 +9,12 @@ not show up in the session.
 Run both from the project root.
 
 ```bash
-skills/create-skill/scripts/wire-skills.sh              # wire, replace wrong links, drop dead links
-skills/create-skill/scripts/wire-skills.sh --dry-run    # print what would change, touch nothing
-skills/create-skill/scripts/wire-skills.sh --list-dirs  # print the harness folders it uses
+<this skill>/scripts/wire-skills.sh              # wire, replace wrong links, drop dead links
+<this skill>/scripts/wire-skills.sh --dry-run    # print what would change, touch nothing
+<this skill>/scripts/wire-skills.sh --list-dirs  # print the harness folders it uses
 
-skills/create-skill/scripts/check-skill-deps.sh         # C6 + C7 for every skill
-skills/create-skill/scripts/check-skill-deps.sh <name>  # only these
+<this skill>/scripts/check-skill-deps.sh         # C6 + C7 for every skill
+<this skill>/scripts/check-skill-deps.sh <name>  # only these
 ```
 
 Settings, all optional, all environment variables:
@@ -50,7 +50,10 @@ prompt per write adds up fast.
    `.claude/` path trigger Claude Code's own-settings protection, which
    ALWAYS prompts; allow rules cannot silence it, and the grant only lasts
    one session (observed 2026-08-13). The real path is an ordinary file
-   write.
+   write. `npx skills add` with a single agent and `-y` **copies** the skill
+   into `.claude/skills/`, so it has no real path outside `.claude/` and
+   every trace write prompts; installing with the symlink method puts the
+   real folder in `.agents/skills/` instead (observed 2026-10-07).
 2. **On a machine that still prompts for ordinary writes**, offer a one-time
    setup: add to the personal `.claude/settings.local.json` (never the
    shared config), under `permissions.allow`:

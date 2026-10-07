@@ -1,2 +1,4 @@
-# machine-local cache (registries + run traces) — never committed
-data/
+# harness folders hold symlinks made by wire-skills.sh — only skills/ is committed
+.claude/skills/
+.agents/skills/
+.DS_Store

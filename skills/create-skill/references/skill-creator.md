@@ -16,7 +16,7 @@ per-proposal yes, which is exactly what `improve` forbids.
 ## Is it available?
 
 ```bash
-eval "$(skills/create-skill/scripts/skill-creator-env.sh)" && echo "$SC_DIR"
+eval "$(<this skill>/scripts/skill-creator-env.sh)" && echo "$SC_DIR"
 ```
 
 The script finds skill-creator's scripts (project skills, user skills,
@@ -58,7 +58,7 @@ a `skills/` folder it is clutter that git sees.
 Cheap and mechanical: one short `claude -p` per query per run.
 
 ```bash
-skills/create-skill/scripts/trigger-eval.sh <skill-dir> <skill-dir>/evals/trigger-evals.json \
+<this skill>/scripts/trigger-eval.sh <skill-dir> <skill-dir>/evals/trigger-evals.json \
   --runs 3 --model <the model id of this session>
 ```
 
@@ -75,7 +75,7 @@ the script header. One query in the sandbox takes about 5 seconds.
 ## Description proposal — `--optimize`
 
 ```bash
-skills/create-skill/scripts/trigger-eval.sh <skill-dir> <eval-set> \
+<this skill>/scripts/trigger-eval.sh <skill-dir> <eval-set> \
   --runs 3 --model <model id> --optimize 3
 ```
 

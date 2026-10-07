@@ -4,7 +4,7 @@
 # description, and create-skill's own approval gate decides.
 #
 # Usage (from the project root):
-#   skills/create-skill/scripts/trigger-eval.sh <skill-dir> <eval-set.json> \
+#   <this skill>/scripts/trigger-eval.sh <skill-dir> <eval-set.json> \
 #       [--runs N] [--model ID] [--description "text to test instead"] \
 #       [--optimize ITERATIONS]
 #

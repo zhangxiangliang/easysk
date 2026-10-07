@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Test wire-skills.sh and check-skill-deps.sh in throwaway git repos.
-# Usage: scripts/test/run.sh    (exit 0 = all passed)
+# Test create-skill's scripts in throwaway git repos.
+# Usage: tests/run.sh    (exit 0 = all passed)
 set -euo pipefail
 
-SRC=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
+SRC=$(cd "$(dirname "${BASH_SOURCE[0]}")/../skills/create-skill" && pwd)
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
 pass=0; fail=0
@@ -101,6 +101,22 @@ printf '#!/bin/sh\necho %s\n' "'{\"is_error\": true, \"result\": \"\"}'" > "$FAK
 check "eval: logged-out claude exits 2, no score" bash -c "PATH='$FAKEBIN':\$PATH HOME='$EMPTY' SKILL_CREATOR_DIR='$FAKE' skills/create-skill/scripts/trigger-eval.sh skills/alpha evals.json 2>&1 | grep -q 'no score written'; [ ! -d skills/alpha/data/evals ] || [ -z \"\$(ls skills/alpha/data/evals)\" ]"
 printf '#!/bin/sh\necho %s\n' "'{\"is_error\": false, \"result\": \"ok\"}'" > "$FAKEBIN/claude"
 check "eval: a working claude passes the preflight" bash -c "PATH='$FAKEBIN':\$PATH HOME='$EMPTY' SKILL_CREATOR_DIR='$FAKE' skills/create-skill/scripts/trigger-eval.sh skills/alpha evals.json 2>&1 | grep -qv 'no score written'"
+
+# 7. installed by `npx skills add` (symlink method): the real folder is in
+#    .agents/skills, .claude/skills links to it, and the scripts still run
+R4="$TMP/agents"; mkdir -p "$R4/.agents/skills" "$R4/.claude/skills"; git -C "$R4" init -q
+(cd "$SRC" && tar cf - --exclude .git --exclude data .) | (mkdir "$R4/.agents/skills/create-skill" && cd "$R4/.agents/skills/create-skill" && tar xf -)
+ln -s ../../.agents/skills/create-skill "$R4/.claude/skills/create-skill"
+cd "$R4"
+check "agents layout: deps check runs" .agents/skills/create-skill/scripts/check-skill-deps.sh
+check "agents layout: runs through the .claude link too" .claude/skills/create-skill/scripts/check-skill-deps.sh
+add_skill "$R4" alpha '- none'
+check "agents layout: wires the project's own skills" .agents/skills/create-skill/scripts/wire-skills.sh
+check "agents layout: own skill linked into both folders" bash -c 'test -L .claude/skills/alpha && test -L .agents/skills/alpha'
+check "agents layout: installed copy left alone" bash -c 'test -d .agents/skills/create-skill && test ! -L .agents/skills/create-skill && test -L .claude/skills/create-skill'
+
+# 8. the skill names no install path of its own: it must run wherever it lands
+check "no hard-coded install path in the skill" bash -c "! grep -rn 'skills/create-skill/' '$SRC'"
 
 echo "passed=$pass failed=$fail"
 [ "$fail" -eq 0 ]

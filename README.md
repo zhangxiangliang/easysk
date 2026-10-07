@@ -37,8 +37,14 @@ nothing breaks: those steps are skipped and the run says so. Details:
 From the root of your project:
 
 ```bash
-git clone --depth 1 https://github.com/zhangxiangliang/easyskill.git skills/create-skill
-rm -rf skills/create-skill/.git        # a nested .git makes your repo record a gitlink, not the files
+npx skills add zhangxiangliang/easysk          # pick Symlink when asked
+```
+
+Or by hand, into your project's `skills/` folder:
+
+```bash
+git clone --depth 1 https://github.com/zhangxiangliang/easysk.git /tmp/easysk
+mkdir -p skills && cp -R /tmp/easysk/skills/create-skill skills/
 skills/create-skill/scripts/wire-skills.sh
 ```
 
@@ -70,4 +76,4 @@ and follows them on top of its own checklist (check C8).
 
 ## Tests
 
-`scripts/test/run.sh` runs 29 checks for the scripts in throwaway repos.
+`tests/run.sh` runs the script tests in throwaway repos.

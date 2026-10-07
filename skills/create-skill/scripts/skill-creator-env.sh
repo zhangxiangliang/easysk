@@ -3,7 +3,7 @@
 # create-skill uses skill-creator only when this succeeds; otherwise it skips
 # the eval steps and says so in the trace (references/skill-creator.md).
 #
-# Usage:   eval "$(skills/create-skill/scripts/skill-creator-env.sh)"
+# Usage:   eval "$(<this skill>/scripts/skill-creator-env.sh)"
 # Prints:  SC_DIR=<folder holding scripts/run_eval.py>
 #          SC_PY=<python 3.10 or newer>
 # Exit 1 with one reason line on stderr when either is missing.

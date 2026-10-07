@@ -24,6 +24,11 @@ Project rules win. If the project's own instructions (`CLAUDE.md`,
 `AGENTS.md`, a skills index) say how skills are registered, which language
 they use or how prose is checked, follow them on top of this file.
 
+`<this skill>` below is the folder this `SKILL.md` is in, as a path from the
+project root — `skills/create-skill`, `.agents/skills/create-skill` or
+`.claude/skills/create-skill`, wherever it was installed. Run every script
+from the project root as `<this skill>/scripts/<script>`.
+
 ## How to call it
 
 | You type | What happens | Done when |
@@ -49,8 +54,8 @@ audit adds nothing and skips nothing.
 | C3 | **Shape**: overview first (what it is + hard rule + "How to call it" table, each command with its done condition), then numbered steps, **each step ending with its own json trace fragment** — or one complete trace example covering all steps. Under 500 lines; overflow moves into `references/`; a reference file over 300 lines gets a table of contents |
 | C4 | **Run trace rule stated**: every run writes `data/runs/<KEY>--<UTC timestamp>--<discriminator>.json`. `<KEY>` is the work-item key (for example a ticket) or the literal `NOTICKET`; the timestamp is `YYYYMMDDTHHMMSSZ`. The file opens with a `_meta` block (`schema`, `ticket`, `skill`, `run_id`, `startedAt`, `endedAt`) and each step writes its record when it finishes |
 | C5 | **Library**: `best-practice/` is committed and holds REAL artifacts (a real run trace, real benchmarks with why they worked); it grows by propose-then-approve only |
-| C6 | **Wired**: when the project keeps its skills in a source folder (`skills/`), every harness folder the project uses (`.claude/skills/`, `.agents/skills/`, …) holds a symlink resolving to `../../skills/<name>`. No symlink = not loaded. `skills/create-skill/scripts/wire-skills.sh` owns the links; never write one by hand |
-| C7 | **Skill dependencies**: a `## Skill dependencies` section lists every skill this one **calls** (runs, or tells the user to run), one bullet each with where it is used, or the single bullet `- none`. A skill that is only mentioned is not a dependency. Every listed name must exist and pass C6. `skills/create-skill/scripts/check-skill-deps.sh` checks it |
+| C6 | **Wired**: when the project keeps its skills in a source folder (`skills/`), every harness folder the project uses (`.claude/skills/`, `.agents/skills/`, …) holds a symlink resolving to `../../skills/<name>`. No symlink = not loaded. `<this skill>/scripts/wire-skills.sh` owns the links; never write one by hand |
+| C7 | **Skill dependencies**: a `## Skill dependencies` section lists every skill this one **calls** (runs, or tells the user to run), one bullet each with where it is used, or the single bullet `- none`. A skill that is only mentioned is not a dependency. Every listed name must exist and pass C6. `<this skill>/scripts/check-skill-deps.sh` checks it |
 | C8 | **Project rules**: whatever the project's own instructions require of a skill (a row in a skills index, a log entry, a language, a prose check) is met. A project with no such rules passes |
 
 ## Where skills live
@@ -60,13 +65,17 @@ Author in `skills/<name>/` (committed). `.claude/skills/<name>` and
 A project with no `skills/` folder keeps skills straight in `.claude/skills/`;
 C6 is then not applicable. A new skill shows up only after a restart.
 
+A skill installed by a package tool (`npx skills add`) lives where that tool
+put it — usually `.agents/skills/<name>`, with `.claude/skills/<name>` linking
+to it. It is vendored: audit gives it C6 only, and nothing here moves it.
+
 ```bash
-# from the project root; the skill is installed at skills/create-skill/
-skills/create-skill/scripts/wire-skills.sh               # link every skill into every harness folder, drop dead links
-skills/create-skill/scripts/check-skill-deps.sh [name]   # C6 + C7: every skill wired, every declared dependency real
+# from the project root
+<this skill>/scripts/wire-skills.sh               # link every skill into every harness folder, drop dead links
+<this skill>/scripts/check-skill-deps.sh [name]   # C6 + C7: every skill wired, every declared dependency real
 ```
 
-Commit the source folder only. Install, settings, the `data/` permission rule
+Commit the source folder only. Script settings, the `data/` permission rule
 and other traps: [`references/repo-mechanics.md`](references/repo-mechanics.md).
 
 ## Run trace
@@ -179,8 +188,8 @@ trace to copy is
 [`best-practice/example-run-trace.json`](best-practice/example-run-trace.json).
 Seed the new skill's `best-practice/` with its first page. Meet the project's
 own rules (C8): its index row, its log entry, its language and prose checks.
-Wire with `skills/create-skill/scripts/wire-skills.sh`, check with
-`skills/create-skill/scripts/check-skill-deps.sh`, then have the user restart
+Wire with `<this skill>/scripts/wire-skills.sh`, check with
+`<this skill>/scripts/check-skill-deps.sh`, then have the user restart
 the session and confirm `/<name>` shows up — a missing symlink is the usual
 cause of a no-show. When skill-creator is available, write
 `evals/trigger-evals.json` with the user and run the trigger eval; a failing
@@ -201,7 +210,7 @@ query becomes a description proposal, not an edit
 ### Step 0 — enumerate
 
 Both listings (skills folder + available list) and
-`skills/create-skill/scripts/check-skill-deps.sh`. Every folder with a
+`<this skill>/scripts/check-skill-deps.sh`. Every folder with a
 `SKILL.md` is audited — no sampling, no skipping. Vendored skills get C6
 only: take their names from the project's instructions or skills index and
 pass them as `VENDORED_SKILLS="a b"` to the deps check. When nothing names
@@ -398,7 +407,7 @@ name: the patch shape it was called to remove survives. Then match every Step 1 
 ### Step 5 — verify, wire, record
 
 Meet the project's own rules (C8), run
-`skills/create-skill/scripts/check-skill-deps.sh`, and write a record of the
+`<this skill>/scripts/check-skill-deps.sh`, and write a record of the
 rebuild — the old SHA, the delete list and the carried-verbatim count —
 wherever the project keeps its skill history (a log file, the commit
 message). It is the only time rules leave a skill, so it earns the record.
@@ -428,10 +437,11 @@ would use it is skipped and says so in the trace.
 ## Hard rules
 
 - Never write a real file into a harness folder (`.claude/skills/`,
-  `.agents/skills/`), and never reach a skill's files through a symlink path —
-  author in the source folder and write `<skills dir>/<name>/data/...`. A
-  `.claude/` path triggers Claude Code's own-settings protection, which always
-  prompts. Never reintroduce copy-based sync.
+  `.agents/skills/`) — a package tool's own installs are the one exception —
+  and never reach a skill's files through a symlink path: author in the source
+  folder and write `<skills dir>/<name>/data/...`. A `.claude/` path triggers
+  Claude Code's own-settings protection, which always prompts. Never
+  reintroduce copy-based sync.
 - No machine-specific absolute paths (`/Users/<name>/...`) in a skill — paths
   are relative to the project root.
 - A description without trigger phrases is a skill that never fires.

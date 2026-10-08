@@ -7,7 +7,7 @@
  * stale and overwrite the links.
  */
 import { lstatSync, mkdirSync, readdirSync, readlinkSync, symlinkSync, unlinkSync, existsSync } from "node:fs";
-import { dirname, join, relative, resolve } from "node:path";
+import { dirname, join, posix, relative, resolve } from "node:path";
 import { Layout, listSkills } from "./layout";
 
 export type WireAction =
@@ -81,8 +81,8 @@ export function wire(layout: Layout, options: { dryRun?: boolean } = {}): WireRe
 
     // 1. every skill with a SKILL.md gets a link
     for (const name of skills) {
-      const link = join(dir, name);
-      const absLink = join(root, link);
+      const link = posix.join(dir, name);
+      const absLink = join(root, dir, name);
       const target = linkTarget(root, dir, join(layout.skillsDir, name));
 
       if (isLink(absLink)) {
@@ -113,7 +113,7 @@ export function wire(layout: Layout, options: { dryRun?: boolean } = {}): WireRe
       const absLink = join(absDir, name);
       if (!isLink(absLink) || existsSync(absLink)) continue;
       const was = readlinkSync(absLink);
-      result.actions.push({ kind: "remove", link: join(dir, name), was });
+      result.actions.push({ kind: "remove", link: posix.join(dir, name), was });
       result.removed += 1;
       if (!dryRun) unlinkSync(absLink);
     }

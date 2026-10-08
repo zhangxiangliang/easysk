@@ -39,5 +39,8 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Only for the first release: npm trusted publishing needs the package to exist.
+          # After 1.0.0 is out, set up trusted publishing on npmjs.com and delete this secret.
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           HUSKY: 0
         run: npx semantic-release

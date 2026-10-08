@@ -79,9 +79,11 @@ jobs:
           node $cli wire
           if ($LASTEXITCODE -ne 0) { throw "wire failed" }
           if (-not (Test-Path ".claude/skills/alpha/SKILL.md")) { throw "the link does not resolve" }
-          node $cli wire | Out-String | Select-String '"kept": 1' | Out-Null
-          if (-not $?) { throw "second wire is not a no-op" }
+          $second = node $cli wire | Out-String | ConvertFrom-Json
+          if ($second.kept -ne 1 -or $second.created -ne 0) { throw "second wire is not a no-op" }
           $report = node $cli check alpha | ConvertFrom-Json
           if ($report.skills[0].fail.C6) { throw "C6 failed: $($report.skills[0].fail.C6)" }
           if ($report.skills[0].fail.C7) { throw "C7 failed: $($report.skills[0].fail.C7)" }
           Pop-Location
+          # check exits 1 because alpha is a bare skill (it fails C1-C4); only C6 and C7 matter here
+          exit 0

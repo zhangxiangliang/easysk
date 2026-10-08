@@ -71,10 +71,10 @@ to it. It is vendored: audit gives it C6 only, and nothing here moves it.
 ```bash
 # from the project root
 easysk wire [--dry-run]          # link every skill into every harness folder, drop dead links
-easysk check [name...]           # every check a program can settle (C1–C7); C5 and C8 come back as "manual"
+easysk check [name...]           # C1–C4, C6, C7; C5 and C8 come back as "manual"
 ```
 
-Commit the source folder only. Script settings, the `data/` permission rule
+Commit the source folder only. CLI settings, the `data/` permission rule
 and other traps: [`references/repo-mechanics.md`](references/repo-mechanics.md).
 
 ## Run trace
@@ -187,9 +187,9 @@ trace to copy is
 [`best-practice/example-run-trace.json`](best-practice/example-run-trace.json).
 Seed the new skill's `best-practice/` with its first page. Meet the project's
 own rules (C8): its index row, its log entry, its language and prose checks.
-Wire with `easysk wire`, check with `easysk check <name>`, then have the user restart
-the session and confirm `/<name>` shows up — a missing symlink is the usual
-cause of a no-show. When skill-creator is available, write
+Wire with `easysk wire`, check with `easysk check <name>`, then have the user
+restart the session and confirm `/<name>` shows up — a missing symlink is the
+usual cause of a no-show. When skill-creator is available, write
 `evals/trigger-evals.json` with the user and run the trigger eval; a failing
 query becomes a description proposal, not an edit
 ([`references/skill-creator.md`](references/skill-creator.md)).
@@ -269,9 +269,9 @@ out only if the user says so, with the reason recorded.
 
 ### Step 2 — approve, write, wire
 
-Show the draft + the tick list. On approval: write, wire, run the deps check,
-note the restart. fix is an edit, so it adds no log entry of its own unless
-the project's rules ask for one.
+Show the draft + the tick list. On approval: write, wire, run
+`easysk check <name>`, note the restart. fix is an edit, so it adds no log
+entry of its own unless the project's rules ask for one.
 
 ```json
 "step2": { "outcome": "written | abandoned", "wired": "symlink ok, deps clean" }
@@ -340,10 +340,9 @@ are skipped.
 
 **First confirm the skill is actually patched** — read it. A skill written
 in two days with no contradictions needs `improve`, not `rebuild`. No patch
-shape → stop. Then
-freeze: the old version is a **git SHA**, the tree must be clean or the SHA
-is not that version, and a snapshot goes to `data/rebuilds/<date>/` — **show
-the path and the rollback line**.
+shape → stop. Then freeze: the old version is a **git SHA**, the tree must be
+clean or the SHA is not that version, and a snapshot goes to
+`data/rebuilds/<date>/` — **show the path and the rollback line**.
 
 ```json
 "step0": { "skill": "<name>", "sha": "<40 hex>", "treeClean": true,
@@ -397,8 +396,9 @@ explicit yes.
 **No `Edit`, no `sed`, no string replacement on the old file.** Write the new
 `SKILL.md` to a fresh path from the template + the Step 1 inventory + the
 Step 3 outline, then swap it in. Editing in place is `fix` wearing rebuild's
-name: the patch shape it was called to remove survives. Then match every Step 1 item against the new file — `kept`, `moved`,
-`deleted` on the user's ruling; an unmatched item is shown in red.
+name: the patch shape it was called to remove survives. Then match every
+Step 1 item against the new file — `kept`, `moved`, `deleted` on the user's
+ruling; an unmatched item is shown in red.
 
 ```json
 "step4": { "writtenFresh": true, "kept": 30, "moved": 2, "deleted": 9,
@@ -407,10 +407,9 @@ name: the patch shape it was called to remove survives. Then match every Step 1 
 
 ### Step 5 — verify, wire, record
 
-Meet the project's own rules (C8), run
-`easysk check <name>`, and write a record of the
-rebuild — the old SHA, the delete list and the carried-verbatim count —
-wherever the project keeps its skill history (a log file, the commit
+Meet the project's own rules (C8), run `easysk check <name>`, and write a
+record of the rebuild — the old SHA, the delete list and the carried-verbatim
+count — wherever the project keeps its skill history (a log file, the commit
 message). It is the only time rules leave a skill, so it earns the record.
 When skill-creator is available, run the output eval with the Step 0 snapshot
 as the baseline: an expectation that passed before and fails now is a
@@ -432,8 +431,8 @@ Otherwise the next real run after a restart is the proof; if it misbehaves,
 - none
 
 Optional, not a project skill: Anthropic's `skill-creator`, for measurement
-only. When `easysk eval` cannot find it, every step that
-would use it is skipped and says so in the trace.
+only. When `easysk eval` cannot find it, every step that would use it is
+skipped and says so in the trace.
 
 ## Hard rules
 
@@ -464,7 +463,7 @@ would use it is skipped and says so in the trace.
   skeleton every new skill starts from (create Step 5, fix Step 1).
 - [`references/rebuild-flow.md`](references/rebuild-flow.md) — the commands
   behind rebuild Steps 0–5.
-- [`references/repo-mechanics.md`](references/repo-mechanics.md) — script
+- [`references/repo-mechanics.md`](references/repo-mechanics.md) — CLI
   settings and the `data/` write permission.
 - [`references/skill-creator.md`](references/skill-creator.md) — when and how
   skill-creator measures a skill, and what it may never do.

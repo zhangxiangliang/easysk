@@ -186,6 +186,6 @@ The record is not optional. `fix` and `improve` only add or reshape; a rebuild
 is the only time rules leave a skill, and six months later the SHA in this
 record is the only way back.
 
-Close the run: the project's own prose checks, symlink + deps check, a session
+Close the run: the project's own prose checks, `easysk check <name>`, a session
 restart, and the next real run of the skill is the proof. Keep the snapshot
 under `data/rebuilds/` until that run passes.

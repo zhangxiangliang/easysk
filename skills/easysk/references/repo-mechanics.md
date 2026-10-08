@@ -42,6 +42,11 @@ at only. Exit 1 when any check fails.
 Never reintroduce a copy-based sync: copies go stale and overwrite the
 symlinks.
 
+The skill folder inside the npm package is runtime material for the MCP
+prompt, not an install source: npm drops every `.gitignore` it packs, so a
+copy taken from there fails C1 (observed 2026-10-08). Install the skill
+with `npx skills add zhangxiangliang/easysk`, which reads GitHub.
+
 ## data/ writes — two rules so traces do not spam permission prompts
 
 Every run writes `data/runs/` several times (one record per step), so a
